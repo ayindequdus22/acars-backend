@@ -131,7 +131,7 @@ export const logout = async (req, res) => {
 export const getMe = async (req, res) => {
     try {
         // Retrieve the current user by their ID, excluding the password field
-        const user = await User.findById(req.user._id).select("-password");
+        const user = await User.findById(req.user._id).select("username -_id");
 
         // Respond with the user data
         res.status(200).json({user});

@@ -88,8 +88,7 @@ const getUserCart = async (req, res) => {
 
 const updateItemQuantity = async (req, res) => {
     const userId = req.user.id;
-    const { productId, quantity } = req.body;
-
+    const { productId, update } = req.body;
     try {
         const cart = await Cart.findOne({ user: userId });
 
@@ -103,10 +102,21 @@ const updateItemQuantity = async (req, res) => {
             return res.status(404).json({ message: 'Item not found in cart' });
         }
 
-        cartItem.quantity = quantity;
+        if (update === "increase") {
+            cartItem.quantity += 1;
+        }  else if (update === "decrease") {
+            if (cartItem.quantity > 1) {
+                cartItem.quantity -= 1;
+            } else {
+                // Remove the item from the cart if the quantity is 1 and update action is decrease
+                cart.cartItems = cart.cartItems.filter(item => !item.product.equals(productId));
+            }
+        }
+
         await cart.save();
         res.status(200).json(cart);
     } catch (error) {
+        console.error(error);
         res.status(500).json({ message: error.message });
     }
 };

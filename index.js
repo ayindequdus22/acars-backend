@@ -47,16 +47,6 @@ try {
 } catch (err) {
     console.error("Error connecting to MongoDB:", err);
 }
-// cloudinary.uploader.upload("./olympic_flag.jpg",
-//   { public_id: "olympic_flag" }, 
-//   function(error, result) {console.log(result,error); });
-
-//   const url = cloudinary.url("olympic_flag", {
-//     width: 100,
-//     height: 150,
-//     crop: 'fill'
-//   });
-
 // Sample route
 
 

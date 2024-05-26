@@ -11,17 +11,7 @@ export const signup = async (req, res) => {
         if (!username || !email || !password) {
             return res.status(400).json({ error: "Make sure all fields are filled" });
         }   
-        // if (!username) {
-        //     return res.status(400).json({ error: "Make sure all usernam are filled" });
-        // }
-        // if (!email) {
-        //     return res.status(400).json({ error: "Make sure all email are filled" });
-        // }
-        // if (!password) {
-        //     return res.status(400).json({ error: "Make sure all password are filled" });
-        // }
-
-
+   
 
         // Define Joi schema for input validation
         const schema = Joi.object({
@@ -45,19 +35,22 @@ export const signup = async (req, res) => {
         // Generate a salt and hash the password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
-
+        const colors = ['#FF5733', '#33FF57', '#3357FF', '#FF33A6', '#FF8F33', '#8F33FF', '#33FFF5'];
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+        
         // Create a new user instance
         const newUser = new User({
             username,
             email,
             password: hashedPassword,
+            color:randomColor
         });
 
         // Save the new user to the database
         await newUser.save();
 
         // Generate token and set it in a cookie
-        generateTokenAndSetCookie(newUser._id, res);
+        // generateTokenAndSetCookie(newUser._id, res);
 
         // Respond with the newly created user data
         res.status(201).json({
@@ -105,6 +98,7 @@ export const login = async (req, res) => {
             _id: user._id,
             username: user.username,
             email: user.email,
+            color:user.color,
             message:"Loggged in successfully"
         });
     } catch (error) {
@@ -131,7 +125,7 @@ export const logout = async (req, res) => {
 export const getMe = async (req, res) => {
     try {
         // Retrieve the current user by their ID, excluding the password field
-        const user = await User.findById(req.user._id).select("username -_id");
+        const user = await User.findById(req.user._id).select("username -_id color");
 
         // Respond with the user data
         res.status(200).json({user});

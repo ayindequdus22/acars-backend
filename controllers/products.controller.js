@@ -9,4 +9,3 @@ export const getAllProducts = async(req,res)=>{
 const product =  await products.find().sort({createdAt:+1});
 return res.status(200).json(product)
 }
-//you need to update dis https://res.cloudinary.com/dxoemtk19/image/upload/v1715175719/image_29_xkqzqj.jpg

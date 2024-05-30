@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import cors from "cors"
+import helmet from 'helmet';
+
 import mongoose from "mongoose";
 import authRoutes from "./routes/auth.route.js";
 import productRoutes from "./routes/product.route.js"
@@ -15,7 +17,8 @@ dotenv.config();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(helmet());
+app.use(cors({ origin: "", credentials: true }));
 app.use(express.json({ limit: "5mb" })); // to parse req.body
 app.use(express.urlencoded({ extended: true })); // to parse form data(urlencoded)
 

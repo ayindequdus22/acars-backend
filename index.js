@@ -4,7 +4,6 @@ import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import cors from "cors"
 import mongoose from "mongoose";
-import { v2 as cloudinary } from 'cloudinary';
 import authRoutes from "./routes/auth.route.js";
 import productRoutes from "./routes/product.route.js"
 import cartRouter from "./routes/cart.route.js";
@@ -22,13 +21,7 @@ app.use(express.urlencoded({ extended: true })); // to parse form data(urlencode
 
 // 
 
-cloudinary.config({
-    cloud_name: 'dxoemtk19',
-    api_key: '786658297538853',
-    api_secret: 'YgMhIW0i6ot3uZuYXD4HXOVm--w'
-});
 
-// CORS headers
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Credentials", true);
     next();

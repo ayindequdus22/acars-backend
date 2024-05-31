@@ -19,12 +19,11 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(helmet());
 // CORS Configuration
+
 const allowedOrigins = (process.env.ALLOWED_ORIGINS || "").split(",").map(origin => origin.trim().replace(/\/$/, ""));
 app.use(cors({
     origin: (origin, callback) => {
-        // allow requests with no origin (like mobile apps, curl requests)
-        if (!origin) return callback(null, true);
-        if (allowedOrigins.includes(origin)) {
+        if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
@@ -32,6 +31,7 @@ app.use(cors({
     },
     credentials: true
 }));
+
 app.use(express.json({ limit: "5mb" })); // to parse req.body
 app.use(express.urlencoded({ extended: true })); // to parse form data(urlencoded)
 

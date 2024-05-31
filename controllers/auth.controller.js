@@ -107,23 +107,12 @@ export const login = async (req, res) => {
     }
 };
 
-app.post('/api/auth/logout', (req, res) => {
-    res.clearCookie('token', {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'None'
-    });
-    return res.status(200).json({ message: 'Logged out successfully' });
-});
 
 export const logout = async (req, res) => {
     try {
-       
-  res.clearCookie("jwt", {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production', // Set to true in production
-            sameSite: 'None'
-        });
+        // Clear the JWT cookie by setting it to an empty string and setting its maxAge to 0
+        res.cookie("jwt", "", { maxAge: 0 });
+
         // Respond with a success message
         res.status(200).json({ message: "Logged out successfully" });
     } catch (error) {
@@ -132,7 +121,6 @@ export const logout = async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
-
 
 export const getMe = async (req, res) => {
     try {

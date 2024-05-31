@@ -111,7 +111,12 @@ export const login = async (req, res) => {
 export const logout = async (req, res) => {
     try {
         // Clear the JWT cookie by setting it to an empty string and setting its maxAge to 0
-        res.cookie("jwt", "", { maxAge: 0 });
+        res.clearCookie("jwt", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production', // Set to true in production
+            sameSite: 'None'
+        });
+
 
         // Respond with a success message
         res.status(200).json({ message: "Logged out successfully" });

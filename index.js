@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(helmet());
-app.use(cors({ origin: "", credentials: true }));
+app.use(cors({ origin: "https://car-website-roan-five.vercel.app/", credentials: true }));
 app.use(express.json({ limit: "5mb" })); // to parse req.body
 app.use(express.urlencoded({ extended: true })); // to parse form data(urlencoded)
 

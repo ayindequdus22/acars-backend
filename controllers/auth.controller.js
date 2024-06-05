@@ -2,7 +2,7 @@ import { generateTokenAndSetCookie } from "../lib/utils/generateToken.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import Joi from "joi";
-
+import jwt from "jsonwebtoken"
 export const signup = async (req, res) => {
     try {
         const { username, email, password } = req.body;
@@ -49,9 +49,6 @@ export const signup = async (req, res) => {
         // Save the new user to the database
         await newUser.save();
 
-        // Generate token and set it in a cookie
-        // generateTokenAndSetCookie(newUser._id, res);
-
         // Respond with the newly created user data
         res.status(201).json({
             _id: newUser._id,
@@ -69,17 +66,17 @@ export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // Check if username and password are provided
+        // Check if email and password are provided
         if (!email || !password) {
-            return res.status(400).json({ error: "Please provide both username and password" });
+            return res.status(400).json({ error: "Please provide both email and password" });
         }
 
-        // Find the user by username
+        // Find the user by email
         const user = await User.findOne({ email });
 
         // If user doesn't exist, return error
         if (!user) {
-            return res.status(400).json({ error: "Invalid username or password" });
+            return res.status(400).json({ error: "Invalid email or password" });
         }
 
         // Compare password with hashed password
@@ -87,25 +84,34 @@ export const login = async (req, res) => {
 
         // If password is incorrect, return error
         if (!isPasswordCorrect) {
-            return res.status(400).json({ error: "Invalid username or password" });
+            return res.status(400).json({ error: "Invalid email or password" });
         }
 
         // Generate token and set it in a cookie
-        generateTokenAndSetCookie(user._id, res);
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+            expiresIn: "15d",
+        });
 
-        // Respond with user data
-        res.status(200).json({
+        // Respond with user data and set the token as an HTTP-only cookie
+        res.status(202).cookie("jwt", token, {
+            maxAge: 15 * 24 * 60 * 60 * 1000, // 15 days in milliseconds
+            httpOnly: true, // Prevent XSS attacks
+            sameSite: "None", // Prevent CSRF attacks
+            secure: process.env.NODE_ENV !== "development", // Use secure cookies in production
+        }).json({
             _id: user._id,
             username: user.username,
             email: user.email,
-            color:user.color,
-            message:"Loggged in successfully"
+            token,
+            color: user.color,
+            message: "Logged in successfully"
         });
     } catch (error) {
-        console.log("Error in login controller", error.message);
+        console.error("Error in login controller", error.message);
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
+
 
 
 export const logout = async (req, res) => {

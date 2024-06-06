@@ -68,7 +68,7 @@ app.get("/hello", (req, res) => {
 // Auth routes
 app.use('/api/auth', authRoutes);
 // products routes
-app.use("/api/products", protectRoute, productRoutes);
+app.use("/api/products", productRoutes);
 // cart routes
 app.use('/api/cart',protectRoute, cartRouter);
 // overviews

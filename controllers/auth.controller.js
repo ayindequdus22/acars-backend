@@ -93,7 +93,7 @@ export const login = async (req, res) => {
         });
 
         // Respond with user data and set the token as an HTTP-only cookie
-        res.status(202).cookie("jwt", token, {
+        res.status(200).cookie("jwt", token, {
             maxAge: 15 * 24 * 60 * 60 * 1000, // 15 days in milliseconds
             httpOnly: true, // Prevent XSS attacks
             sameSite: "None", // Prevent CSRF attacks
